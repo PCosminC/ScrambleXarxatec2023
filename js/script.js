@@ -1,6 +1,7 @@
 import words from "./words.js";
 
-// Definir las constantes
+let correctWord, timer, lives, numberOfPlayers, timeLeft, currentPlayer;
+
 const wordText = document.querySelector('.word');
 const hintText = document.querySelector('.hint span');
 const playerText = document.querySelector('.player span');
@@ -13,11 +14,18 @@ const scoreText = document.querySelector('.score span');
 const winningScore = 25;
 const players = [];
 
-// Definir variables del juego
-let correctWord, timer, lives, numberOfPlayers, currentPlayer;
 
-// Iniciar el temporizador
+lives = 3;
+currentPlayer = 0;
+livesText.innerText = lives;
+numberOfPlayers = parseInt(prompt('Introduzca el numero de jugadores'));
+for (let i = 0; i < numberOfPlayers; i++) {
+  players[i] = { name: 'Jugador ' + (i + 1), score: 0 }
+}
+startGame();
+
 function startTimer(maxtime) {
+  const interval = 1000;
   clearInterval(timer);
   timer = setInterval(() => {
     if (maxtime > 0) {
@@ -25,104 +33,71 @@ function startTimer(maxtime) {
       timeText.innerText = maxtime;
     } else {
       clearInterval(timer);
-      endRound(false);
+      alert(`El tiempo se acabo, ${correctWord.toUpperCase()} era la palabra correcta!`);
+      countLives();
+      startGame();
     }
-  }, 1000);
+  }, interval);
 }
 
-// Iniciar un nuevo juego o acabarlo si no quedan vidas
-function startGame() {
-  playerText.innerText = players[currentPlayer].name;
-  scoreText.innerText = players[currentPlayer].score;
+function countLives(){
+  lives--;
+  livesText.innerText = lives;
+}
 
+function isLivesOver(){
   if (lives === 0) {
-    alert('Fin del juego. ¡No te quedan más vidas!');
+    alert('Fin del juego! No te quedan mas vidas!');
     return;
   }
+}
 
+function startGame () {
+  playerText.innerText = players[currentPlayer].name;
+  scoreText.innerText = players[currentPlayer].score;
+  isLivesOver();
   startTimer(30);
-  const randomWord = getRandomWord();
-  displayWord(randomWord);
-}
-
-// Obtener una palabra aleatoria
-function getRandomWord() {
-  return words[Math.floor(Math.random() * words.length)];
-}
-
-// Mezclar las letras de la palabra
-function shuffleWord(word) {
-  const splitedWords = word.split('');
-  for (let i = splitedWords.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [splitedWords[i], splitedWords[j]] = [splitedWords[j], splitedWords[i]];
-  }
-  return splitedWords.join('');
-}
-
-// Mostrar la palabra y su pista
-function displayWord(wordInfo) {
-  const shuffledWord = shuffleWord(wordInfo.word);
-  wordText.innerText = shuffledWord;
-  hintText.innerText = wordInfo.hint;
-  correctWord = wordInfo.word.toLowerCase();
+  let randomWord = words[Math.floor(Math.random() * words.length)];
+  let splitedWords = randomWord.word.split('');
+  //reordena aleatoriamente los elementos del array (stackoverflow)
+  splitedWords.sort(()=> Math.random() - 0.5);
+  wordText.innerText = splitedWords.join('');
+  hintText.innerText = randomWord.hint;
+  correctWord = randomWord.word.toLowerCase();
   playerInputWord.value = '';
   playerInputWord.setAttribute('maxlength', correctWord.length);
 }
 
-// Finalizar una ronda del juego
-function endRound(isCorrect) {
-  clearInterval(timer);
-  if (!isCorrect) {
-    lives--;
-    livesText.innerText = lives;
-    alert(`El tiempo se agotó. La palabra correcta era "${correctWord.toUpperCase()}".`);
-  }
-  currentPlayer++;
-  if (currentPlayer >= numberOfPlayers) currentPlayer = 0;
-  startGame();
+function getScore(){
+  timeLeft = parseInt(timeText.innerText);
+  players[currentPlayer].score += timeLeft * 1;
+  scoreText.innerText = players[currentPlayer].score;
 }
 
-// Comprobar si la palabra ingresada es la correcta
+function displayWinner(){
+  if (timeLeft >= winningScore) {
+    document.getElementById('container').style.display = 'none';
+    const gameOverText = document.getElementById('gameOver');
+    gameOverText.innerText = (`GAME OVER \n Enhorabuena, El ${players[currentPlayer].name.toUpperCase()} ha ganado!`);
+    gameOverText.style.display = 'block';
+  }
+}
+
 function checkWord() {
-  const userInputWord = playerInputWord.value.toLowerCase();
-  if (!userInputWord) {
-    alert('Por favor, ingrese una palabra.');
-    return;
-  }
+  let userInputWord = playerInputWord.value.toLowerCase();
+  if (!userInputWord) return alert('Por favor, indroduzca una palabra!');
   if (userInputWord !== correctWord) {
-    alert(`Lo siento, "${userInputWord}" no es la palabra correcta.`);
+    alert(`Vaya, ${userInputWord} no es la palabra correcta!`);
   } else {
-    const timeLeft = parseInt(timeText.innerText);
-    players[currentPlayer].score += timeLeft * 1;
-    scoreText.innerText = players[currentPlayer].score;
-    if (timeLeft >= winningScore) {
-      endGame();
-      return;
-    }
-    alert(`¡Correcto! "${userInputWord.toUpperCase()}" es la palabra correcta.`);
+    clearInterval(timer);
+    getScore();
+    displayWinner();
+    alert(`Enhorabuena, ${userInputWord.toUpperCase()} es la palabra correcta!`);
+    currentPlayer++;
+    if (currentPlayer >= numberOfPlayers) currentPlayer = 0;
+    startGame();
   }
-  endRound(true);
 }
 
-// Finalizar el juego si se averigua en 5segs un o menos
-function endGame() {
-  document.getElementById('container').style.display = 'none';
-  const gameOverText = document.getElementById('gameOver');
-  gameOverText.innerText = `GAME OVER\n¡Enhorabuena, ${players[currentPlayer].name.toUpperCase()} ha ganado!`;
-  gameOverText.style.display = 'block';
-}
-
-// Inicialización del juego
-lives = 3;
-livesText.innerText = lives;
-numberOfPlayers = parseInt(prompt('Introduzca el número de jugadores'));
-for (let i = 0; i < numberOfPlayers; i++) {
-  players[i] = { name: `Jugador ${i + 1}`, score: 0 };
-}
-currentPlayer = 0;
-startGame();
-
-// eventos de los botones
 newWordButton.addEventListener('click', startGame);
 checkButton.addEventListener('click', checkWord);
