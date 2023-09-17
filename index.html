@@ -8,23 +8,28 @@
     <script type="module" src="js/script.js" defer></script>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="container">
         <h2>Juguemos al Scramble </h2>
         <div class="content">
             <p class="word"></p>
             <div class="directions">
                 <p class="hint">Tu indicio es: <span></span></p>
-                <p class="timer">Tiempo restante: <span><b></b></span></p>               
-                <p class="lives">Vidas restante: <span><b></b></span></p>
-                
-                
+                <p class="timer">Tiempo restante: <span><b></b></span></p>
+                <p class="player">Turno de: <span></span></p>           
+                <p class="lives">Vidas restantes: <span><b></b></span></p>
+                <p class="score">Puntuación: <span><b></b></span></p>
             </div>
+            <div id="info">Para ganar, averigua la palabra en 5 segundos o menos!</div>
             <input type="text" form="Introduzca una palabra válida">
             <div class="buttons">
                 <button class="new_word">Nueva palabra</button>
                 <button class="check_word">Comprueba</button>
             </div>
         </div>
+    
     </div>   
+    <div id="gameOver" style="display: none;">
+        GAME OVER
+    </div>
 </body>
 </html>

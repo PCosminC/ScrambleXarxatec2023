@@ -41,33 +41,44 @@ body{
   }
 }
 .container{
-    width: 450px;
-    background: #fff;
-    border-radius: 9px;
+    width: 720px;
+    background: whitesmoke;
+    border-radius: 20px;
+    border: 2px solid rgb(255, 166, 2);
 }
 .container h2{
-    font-size: 30px;
+    color: rgb(49, 90, 237);
+    font-size: 35px;
     font-weight: 500;
-    padding: 18px 25px;
+    text-align: center;
+    padding: 25px 25px;
     border-bottom: 2px solid grey;
+    text-transform: uppercase;
 }
 .container .content{
     margin: 25px 20px 35px;
 }
 .content .word{
-    font-size: 33px;
-    font-weight: 500;
+    color: orange;
+    font-size: 49px;
+    font-weight: 700;
     letter-spacing: 20px;
-    margin-right: 24px;
     text-align: center;
     text-transform: uppercase;
 }
 .content .directions{
-    margin: 25px 0 20px;
+    margin: 25px 0 25px;
 }
 .directions p{
     font-size: 18px;
     margin-bottom: 10px;
+}
+
+#info{
+    text-align: center;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    color: rgb(49, 90, 237);
 }
 
 .content input{
@@ -76,7 +87,7 @@ body{
     outline: none;
     font-size: 18px;
     padding: 0 16px;
-    border-radius: 5px;
+    border-radius: 15px;
     border: 1px solid wheat;
 }
 .content .buttons{
@@ -91,12 +102,19 @@ body{
     cursor: pointer;
     padding: 15px 0;
     font-size: 17px;
-    border-radius: 5px;
+    border-radius: 15px;
     width: calc(100% / 2 - 8px);
 }
 .buttons .new_word{
-    background-color: grey;
+    background-color: rgb(157, 157, 252);
 }
 .buttons .check_word{
-    background-color: rgb(135, 135, 249);
+    background-color: rgb(49, 90, 237);
+}
+
+.win_message {
+  display: none;
+  font-size: 24px;
+  text-align: center;
+  color: green;
 }
